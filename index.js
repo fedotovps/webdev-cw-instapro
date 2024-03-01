@@ -118,15 +118,12 @@ const renderApp = () => {
           token: getToken(),
         })
           .then((newPosts) => {
-            page = POSTS_PAGE;
-            posts = newPosts;
-            renderApp();
+            goToPage(POSTS_PAGE);
           })
           .catch((error) => {
             console.error(error);
             goToPage(POSTS_PAGE);
           });
-        goToPage(POSTS_PAGE);
       },
     });
   }
