@@ -33,28 +33,32 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
 
     appEl.innerHTML = appHtml;
 
+    renderHeaderComponent({
+      element: document.querySelector(".header-container"),
+    });
+
+    const uploadImageContainer = appEl.querySelector(".upload-image-container");
+
+    if (uploadImageContainer) {
+      renderUploadImageComponent({
+        element: appEl.querySelector(".upload-image-container"),
+        onImageUrlChange(newImageUrl) {
+          imageUrl = newImageUrl;
+        },
+      });
+    }
+
+    const description = document.querySelector(".textarea");
+
+    console.log(description.value);
+
     document.getElementById("add-button").addEventListener("click", () => {
       onAddPostClick({
-        description: "Описание картинки",
-        imageUrl: "https://image.png",
+        description: description.value,
+        imageUrl: imageUrl,
       });
     });
   };
 
   render();
-
-  renderHeaderComponent({
-    element: document.querySelector(".header-container"),
-  });
-
-  const uploadImageContainer = appEl.querySelector(".upload-image-container");
-
-  if (uploadImageContainer) {
-    renderUploadImageComponent({
-      element: appEl.querySelector(".upload-image-container"),
-      onImageUrlChange(newImageUrl) {
-        imageUrl = newImageUrl;
-      },
-    });
-  }
 }
