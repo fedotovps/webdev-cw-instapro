@@ -1,7 +1,9 @@
 import { USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
-import { posts, goToPage, getToken } from "../index.js";
+import { posts, goToPage, getToken, removeFirstWord } from "../index.js";
 import { clickLikes } from "../api.js";
+import { formatDistanceToNow } from "date-fns";
+import { ru } from "date-fns/locale";
 
 export function renderPostsPageComponent({ appEl }) {
   // TODO: реализовать рендер постов из api
@@ -21,7 +23,9 @@ export function renderPostsPageComponent({ appEl }) {
       postImageUrl: post.imageUrl,
       postLikesCount: post.likes.length,
       postDescription: post.description,
-      postDate: post.createdAt,
+      postDate: removeFirstWord(
+        formatDistanceToNow(new Date(post.createdAt), { locale: ru }) + " назад"
+      ),
       isLiked: post.isLiked,
       postLikes: post.likes,
     };
