@@ -37,6 +37,12 @@ export function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+export function removeFirstWord(str) {
+  const index = str.indexOf(" "); // Находим индекс первого пробела
+  const newStr = str.slice(index + 1); // Вырезаем начиная с индекса следующего за пробелом
+  return newStr;
+}
+
 /**
  * Включает страницу приложения
  */
