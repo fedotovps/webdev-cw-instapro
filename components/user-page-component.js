@@ -1,6 +1,7 @@
 import { USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
-import { posts, goToPage } from "../index.js";
+import { posts, goToPage, getToken, renderApp } from "../index.js";
+import { clickLikes, getPostsUser } from "../api.js";
 
 export function renderUserPageComponent({ appEl }) {
   // TODO: реализовать рендер постов из api
@@ -21,22 +22,29 @@ export function renderUserPageComponent({ appEl }) {
       postLikesCount: post.likes.length,
       postDescription: post.description,
       postDate: post.createdAt,
+      isLiked: post.isLiked,
+      postLikes: post.likes,
     };
   });
 
   const postHtml = postArr
-    .map((post) => {
+    .map((post, index) => {
+      let likeImg;
+      post.isLiked
+        ? (likeImg = `like-active.svg`)
+        : (likeImg = `like-not-active.svg`);
+
       return `
         <li class="post">
           <div class="post-image-container">
             <img class="post-image" src="${post.postImageUrl}">
           </div>
           <div class="post-likes">
-            <button data-post-id="${post.postId}" class="like-button">
-              <img src="./assets/images/like-active.svg">
+            <button data-post-id="${index}" class="like-button">
+              <img src="./assets/images/${likeImg}">
             </button>
             <p class="post-likes-text">
-              Нравится: <strong>${post.postLikesCount}</strong>
+              Нравится: <strong id="like-count${index}">${post.postLikesCount}</strong>
             </p>
           </div>
           <p class="post-text">
@@ -66,15 +74,34 @@ export function renderUserPageComponent({ appEl }) {
 
   appEl.innerHTML = appHtml;
 
-  renderHeaderComponent({
-    element: document.querySelector(".header-container"),
-  });
+  for (let likeEl of document.querySelectorAll(".like-button")) {
+    likeEl.addEventListener("click", () => {
+      const arrId = likeEl.dataset.postId;
+      const postId = postArr[arrId].postId;
+      let action;
+      const likeCount = document.getElementById("like-count" + arrId);
 
-  for (let userEl of document.querySelectorAll(".post-header")) {
-    userEl.addEventListener("click", () => {
-      goToPage(USER_POSTS_PAGE, {
-        userId: userEl.dataset.userId,
+      postArr[arrId].isLiked ? (action = "dislike") : (action = "like");
+
+      clickLikes({
+        token: getToken(),
+        postId,
+        action,
+      }).then((data) => {
+        if (postArr[arrId].isLiked) {
+          postArr[arrId].isLiked = false;
+          likeEl.innerHTML = `<img src="./assets/images/like-not-active.svg">`;
+          likeCount.innerHTML = data.post.likes.length;
+        } else {
+          postArr[arrId].isLiked = true;
+          likeEl.innerHTML = `<img src="./assets/images/like-active.svg">`;
+          likeCount.innerHTML = data.post.likes.length;
+        }
       });
     });
   }
+
+  renderHeaderComponent({
+    element: document.querySelector(".header-container"),
+  });
 }
