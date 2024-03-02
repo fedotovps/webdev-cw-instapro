@@ -29,9 +29,20 @@ export function renderUserPageComponent({ appEl }) {
   const postHtml = postArr
     .map((post, index) => {
       let likeImg;
+      let likeCount;
       post.isLiked
         ? (likeImg = `like-active.svg`)
         : (likeImg = `like-not-active.svg`);
+
+      if (post.postLikesCount === 1) {
+        likeCount = post.postLikes[0].name;
+      } else if (post.postLikesCount > 1) {
+        likeCount = `${post.postLikes[0].name} и ещё ${
+          post.postLikesCount - 1
+        }`;
+      } else if (post.postLikesCount < 1) {
+        likeCount = "0";
+      }
 
       return `
         <li class="post">
@@ -43,7 +54,7 @@ export function renderUserPageComponent({ appEl }) {
               <img src="./assets/images/${likeImg}">
             </button>
             <p class="post-likes-text">
-              Нравится: <strong id="like-count${index}">${post.postLikesCount}</strong>
+              Нравится: <strong id="like-count${index}">${likeCount}</strong>
             </p>
           </div>
           <p class="post-text">
@@ -79,6 +90,7 @@ export function renderUserPageComponent({ appEl }) {
       const postId = postArr[arrId].postId;
       let action;
       const likeCount = document.getElementById("like-count" + arrId);
+      let likeCountHtml;
 
       postArr[arrId].isLiked ? (action = "dislike") : (action = "like");
 
@@ -86,17 +98,39 @@ export function renderUserPageComponent({ appEl }) {
         token: getToken(),
         postId,
         action,
-      }).then((data) => {
-        if (postArr[arrId].isLiked) {
-          postArr[arrId].isLiked = false;
-          likeEl.innerHTML = `<img src="./assets/images/like-not-active.svg">`;
-          likeCount.innerHTML = data.post.likes.length;
-        } else {
-          postArr[arrId].isLiked = true;
-          likeEl.innerHTML = `<img src="./assets/images/like-active.svg">`;
-          likeCount.innerHTML = data.post.likes.length;
-        }
-      });
+      })
+        .then((data) => {
+          if (postArr[arrId].isLiked) {
+            postArr[arrId].isLiked = false;
+            likeEl.innerHTML = `<img src="./assets/images/like-not-active.svg">`;
+            if (data.post.likes.length === 1) {
+              likeCount.innerHTML = data.post.likes[0].name;
+            } else if (data.post.likes.length > 1) {
+              likeCount.innerHTML = `${data.post.likes[0].name} и ещё ${
+                data.post.likes.length + 1
+              }`;
+            } else if (data.post.likes.length < 1) {
+              likeCount.innerHTML = "0";
+            }
+          } else {
+            postArr[arrId].isLiked = true;
+            likeEl.innerHTML = `<img src="./assets/images/like-active.svg">`;
+            if (data.post.likes.length === 1) {
+              likeCount.innerHTML = data.post.likes[0].name;
+            } else if (data.post.likes.length > 1) {
+              likeCount.innerHTML = `${data.post.likes[0].name} и ещё ${
+                data.post.likes.length - 1
+              }`;
+            } else if (data.post.likes.length < 1) {
+              likeCount.innerHTML = "0";
+            }
+          }
+        })
+        .catch((error) => {
+          if (error.message === "Нет авторизации") {
+            alert("Лайкать посты могут только автризованные пользователи");
+          }
+        });
     });
   }
 
