@@ -1,7 +1,6 @@
-import { USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
-import { posts, goToPage, getToken, renderApp } from "../index.js";
-import { clickLikes, getPostsUser } from "../api.js";
+import { posts, getToken, renderApp } from "../index.js";
+import { clickLikes } from "../api.js";
 
 export function renderUserPageComponent({ appEl }) {
   // TODO: реализовать рендер постов из api
