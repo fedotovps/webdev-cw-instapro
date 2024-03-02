@@ -16,6 +16,7 @@ export function renderUserPageComponent({ appEl }) {
       postUserId: post.user.id,
       postUserName: post.user.name,
       postUserImageUrl: post.user.imageUrl,
+      postId: post.id,
       postImageUrl: post.imageUrl,
       postLikesCount: post.likes.length,
       postDescription: post.description,
@@ -31,7 +32,7 @@ export function renderUserPageComponent({ appEl }) {
             <img class="post-image" src="${post.postImageUrl}">
           </div>
           <div class="post-likes">
-            <button data-post-id="642d00579b190443860c2f32" class="like-button">
+            <button data-post-id="${post.postId}" class="like-button">
               <img src="./assets/images/like-active.svg">
             </button>
             <p class="post-likes-text">
