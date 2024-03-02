@@ -13,6 +13,11 @@ export function renderPostsPageComponent({ appEl }) {
 
   const postHtml = posts
     .map((post) => {
+      let likeImg;
+      post.isLiked
+        ? (likeImg = `like-active.svg`)
+        : (likeImg = `like-not-active.svg`);
+
       return `
         <li class="post">
           <div class="post-header" data-user-id="${post.user.id}">
@@ -24,7 +29,7 @@ export function renderPostsPageComponent({ appEl }) {
           </div>
           <div class="post-likes">
             <button data-post-id="${post.id}" class="like-button">
-              <img src="./assets/images/like-active.svg">
+              <img src="./assets/images/${likeImg}">
             </button>
             <p class="post-likes-text">
               Нравится: <strong>${post.likes.length}</strong>
@@ -52,6 +57,33 @@ export function renderPostsPageComponent({ appEl }) {
               </div>`;
 
   appEl.innerHTML = appHtml;
+
+  for (let likeEl of document.querySelectorAll(".like-button")) {
+    likeEl.addEventListener("click", () => {
+      const arrId = likeEl.dataset.postId;
+      const postId = postArr[arrId].postId;
+      let action;
+      const likeCount = document.getElementById("like-count" + arrId);
+
+      postArr[arrId].isLiked ? (action = "dislike") : (action = "like");
+
+      clickLikes({
+        token: getToken(),
+        postId,
+        action,
+      }).then((data) => {
+        if (postArr[arrId].isLiked) {
+          postArr[arrId].isLiked = false;
+          likeEl.innerHTML = `<img src="./assets/images/like-not-active.svg">`;
+          likeCount.innerHTML = data.post.likes.length;
+        } else {
+          postArr[arrId].isLiked = true;
+          likeEl.innerHTML = `<img src="./assets/images/like-active.svg">`;
+          likeCount.innerHTML = data.post.likes.length;
+        }
+      });
+    });
+  }
 
   renderHeaderComponent({
     element: document.querySelector(".header-container"),

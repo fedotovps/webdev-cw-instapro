@@ -42,6 +42,20 @@ export function getPostsUser({ token, userId }) {
     });
 }
 
+export function clickLikes({ token, postId, action }) {
+  return fetch(`${postsHost}/${postId}/${action}`, {
+    method: "POST",
+    headers: {
+      Authorization: token,
+    },
+  }).then((response) => {
+    if (response.status === 500) {
+      throw new Error("Что-то пошло не так, попробуйте ещё раз");
+    }
+    return response.json();
+  });
+}
+
 export function addPost({ description, imageUrl, token }) {
   return fetch(postsHost, {
     method: "POST",
