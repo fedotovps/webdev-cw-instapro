@@ -1,6 +1,7 @@
 import { USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
-import { posts, goToPage } from "../index.js";
+import { posts, goToPage, getToken } from "../index.js";
+import { clickLikes } from "../api.js";
 
 export function renderPostsPageComponent({ appEl }) {
   // TODO: реализовать рендер постов из api
@@ -11,40 +12,55 @@ export function renderPostsPageComponent({ appEl }) {
    * можно использовать https://date-fns.org/v2.29.3/docs/formatDistanceToNow
    */
 
-  const postHtml = posts
-    .map((post) => {
+  const postArr = posts.map((post) => {
+    return {
+      postUserId: post.user.id,
+      postUserName: post.user.name,
+      postUserImageUrl: post.user.imageUrl,
+      postId: post.id,
+      postImageUrl: post.imageUrl,
+      postLikesCount: post.likes.length,
+      postDescription: post.description,
+      postDate: post.createdAt,
+      isLiked: post.isLiked,
+      postLikes: post.likes,
+    };
+  });
+
+  const postHtml = postArr
+    .map((post, index) => {
       let likeImg;
       post.isLiked
         ? (likeImg = `like-active.svg`)
         : (likeImg = `like-not-active.svg`);
 
       return `
-        <li class="post">
-          <div class="post-header" data-user-id="${post.user.id}">
-              <img src="${post.user.imageUrl}" class="post-header__user-image">
-              <p class="post-header__user-name">${post.user.name}</p>
+          <li class="post">
+          <div class="post-header" data-user-id="${post.postUserId}">
+              <img src="${post.postUserImageUrl}" class="post-header__user-image">
+              <p class="post-header__user-name">${post.postUserName}</p>
           </div>
           <div class="post-image-container">
-            <img class="post-image" src="${post.imageUrl}">
+            <img class="post-image" src="${post.postImageUrl}">
           </div>
           <div class="post-likes">
-            <button data-post-id="${post.id}" class="like-button">
+            <button data-post-id="${index}" class="like-button">
               <img src="./assets/images/${likeImg}">
             </button>
             <p class="post-likes-text">
-              Нравится: <strong>${post.likes.length}</strong>
+              Нравится: <strong id="like-count${index}">${post.postLikesCount}</strong>
             </p>
           </div>
           <p class="post-text">
-            <span class="user-name">${post.user.name}</span>
-            ${post.description}
+            <span class="user-name">${post.postUserName}</span>
+            ${post.postDescription}
           </p>
           <p class="post-date">
-            ${post.createdAt}
+            ${post.postDate}
             <!--19 минут назад-->
           </p>
         </li>
-    `;
+      `;
     })
     .join("");
 
