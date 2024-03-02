@@ -49,10 +49,15 @@ export function clickLikes({ token, postId, action }) {
       Authorization: token,
     },
   }).then((response) => {
+    if (response.status === 401) {
+      throw new Error("Нет авторизации");
+    }
     if (response.status === 500) {
       throw new Error("Что-то пошло не так, попробуйте ещё раз");
     }
-    return response.json();
+    if (response.status === 200) {
+      return response.json();
+    }
   });
 }
 
