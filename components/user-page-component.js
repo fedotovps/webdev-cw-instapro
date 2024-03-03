@@ -1,5 +1,5 @@
 import { renderHeaderComponent } from "./header-component.js";
-import { posts, getToken, removeFirstWord } from "../index.js";
+import { posts, getToken, removeFirstWord, setPost } from "../index.js";
 import { clickLikes } from "../api.js";
 import { formatDistanceToNow } from "date-fns";
 import { ru } from "date-fns/locale";
@@ -103,32 +103,10 @@ export function renderUserPageComponent({ appEl }) {
         postId,
         action,
       })
-        .then((data) => {
-          if (postArr[arrId].isLiked) {
-            postArr[arrId].isLiked = false;
-            likeEl.innerHTML = `<img src="./assets/images/like-not-active.svg">`;
-            if (data.post.likes.length === 1) {
-              likeCount.innerHTML = data.post.likes[0].name;
-            } else if (data.post.likes.length > 1) {
-              likeCount.innerHTML = `${data.post.likes[0].name} и ещё ${
-                data.post.likes.length + 1
-              }`;
-            } else if (data.post.likes.length < 1) {
-              likeCount.innerHTML = "0";
-            }
-          } else {
-            postArr[arrId].isLiked = true;
-            likeEl.innerHTML = `<img src="./assets/images/like-active.svg">`;
-            if (data.post.likes.length === 1) {
-              likeCount.innerHTML = data.post.likes[0].name;
-            } else if (data.post.likes.length > 1) {
-              likeCount.innerHTML = `${data.post.likes[0].name} и ещё ${
-                data.post.likes.length - 1
-              }`;
-            } else if (data.post.likes.length < 1) {
-              likeCount.innerHTML = "0";
-            }
-          }
+        .then((response) => {
+          posts[arrId] = response.post;
+          setPost(posts);
+          renderUserPageComponent({ appEl });
         })
         .catch((error) => {
           if (error.message === "Нет авторизации") {

@@ -33,6 +33,10 @@ export const logout = () => {
   goToPage(POSTS_PAGE);
 };
 
+export const setPost = (newPost) => {
+  return (posts = newPost);
+};
+
 export function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
