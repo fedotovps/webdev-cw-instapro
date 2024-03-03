@@ -93,8 +93,6 @@ export function renderUserPageComponent({ appEl }) {
       const arrId = likeEl.dataset.postId;
       const postId = postArr[arrId].postId;
       let action;
-      const likeCount = document.getElementById("like-count" + arrId);
-      let likeCountHtml;
 
       postArr[arrId].isLiked ? (action = "dislike") : (action = "like");
 
