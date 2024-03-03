@@ -20,7 +20,6 @@ import { renderUserPageComponent } from "./components/user-page-component.js";
 export let user = getUserFromLocalStorage();
 export let page = null;
 export let posts = [];
-//export let userId = null;
 
 export const getToken = () => {
   const token = user ? `Bearer ${user.token}` : undefined;
@@ -31,6 +30,10 @@ export const logout = () => {
   user = null;
   removeUserFromLocalStorage();
   goToPage(POSTS_PAGE);
+};
+
+export const setPost = (newPost) => {
+  return (posts = newPost);
 };
 
 export function getRandomNumber(min, max) {
