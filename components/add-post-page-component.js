@@ -1,3 +1,4 @@
+import { replaceTag } from "../helpers.js";
 import { renderHeaderComponent } from "./header-component.js";
 import { renderUploadImageComponent } from "./upload-image-component.js";
 
@@ -5,8 +6,6 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
   let imageUrl = "";
 
   const render = () => {
-    // TODO: Реализовать страницу добавления поста
-
     const appHtml = `
     <div class="page-container">
       <div class="header-container"></div>
@@ -50,11 +49,9 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
 
     const description = document.querySelector(".textarea");
 
-    console.log(description.value);
-
     document.getElementById("add-button").addEventListener("click", () => {
       onAddPostClick({
-        description: description.value,
+        description: replaceTag(description.value),
         imageUrl: imageUrl,
       });
     });

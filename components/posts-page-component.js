@@ -1,25 +1,12 @@
 import { USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
-import {
-  posts,
-  goToPage,
-  getToken,
-  removeFirstWord,
-  setPost,
-} from "../index.js";
+import { posts, goToPage, getToken, setPost } from "../index.js";
 import { clickLikes } from "../api.js";
 import { formatDistanceToNow } from "date-fns";
 import { ru } from "date-fns/locale";
+import { removeFirstWord } from "../helpers.js";
 
 export function renderPostsPageComponent({ appEl }) {
-  // TODO: реализовать рендер постов из api
-  console.log("Актуальный список постов:", posts);
-
-  /**
-   * TODO: чтобы отформатировать дату создания поста в виде "19 минут назад"
-   * можно использовать https://date-fns.org/v2.29.3/docs/formatDistanceToNow
-   */
-
   const postArr = posts.map((post) => {
     return {
       postUserId: post.user.id,
@@ -78,7 +65,6 @@ export function renderPostsPageComponent({ appEl }) {
           </p>
           <p class="post-date">
             ${post.postDate}
-            <!--19 минут назад-->
           </p>
         </li>
       `;
@@ -103,7 +89,6 @@ export function renderPostsPageComponent({ appEl }) {
 
       postArr[arrId].isLiked ? (action = "dislike") : (action = "like");
 
-      console.log(posts[arrId]);
       clickLikes({
         token: getToken(),
         postId,
