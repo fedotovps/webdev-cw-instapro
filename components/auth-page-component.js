@@ -100,7 +100,6 @@ export function renderAuthPageComponent({ appEl, setUser }) {
             setUser(user.user);
           })
           .catch((error) => {
-            console.warn(error);
             setError(error.message);
           });
       } else {
@@ -136,7 +135,6 @@ export function renderAuthPageComponent({ appEl, setUser }) {
             setUser(user.user);
           })
           .catch((error) => {
-            console.warn(error);
             setError(error.message);
           });
       }

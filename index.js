@@ -36,16 +36,6 @@ export const setPost = (newPost) => {
   return (posts = newPost);
 };
 
-export function getRandomNumber(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-export function removeFirstWord(str) {
-  const index = str.indexOf(" "); // Находим индекс первого пробела
-  const newStr = str.slice(index + 1); // Вырезаем начиная с индекса следующего за пробелом
-  return newStr;
-}
-
 /**
  * Включает страницу приложения
  */
@@ -76,7 +66,6 @@ export const goToPage = (newPage, data) => {
           renderApp();
         })
         .catch((error) => {
-          console.error(error);
           goToPage(POSTS_PAGE);
         });
     }
@@ -85,7 +74,6 @@ export const goToPage = (newPage, data) => {
       page = LOADING_PAGE;
       renderApp();
 
-      // TODO: реализовать получение постов юзера из API
       let userId = data.userId;
       return getPostsUser({ token: getToken(), userId })
         .then((newPosts) => {
@@ -94,9 +82,8 @@ export const goToPage = (newPage, data) => {
           renderApp();
         })
         .catch((error) => {
-          console.log(error);
+          goToPage(USER_POSTS_PAGE);
         });
-      //console.log("Открываю страницу пользователя: ", data.userId);
     }
 
     page = newPage;
@@ -135,8 +122,6 @@ export const renderApp = () => {
     return renderAddPostPageComponent({
       appEl,
       onAddPostClick({ description, imageUrl }) {
-        // TODO: реализовать добавление поста в API
-        console.log("Добавляю пост...", { description, imageUrl });
         addPost({
           description,
           imageUrl,
@@ -146,7 +131,6 @@ export const renderApp = () => {
             goToPage(POSTS_PAGE);
           })
           .catch((error) => {
-            console.error(error);
             goToPage(POSTS_PAGE);
           });
       },
@@ -160,8 +144,6 @@ export const renderApp = () => {
   }
 
   if (page === USER_POSTS_PAGE) {
-    // TODO: реализовать страницу фотографию пользвателя
-    //appEl.innerHTML = "Здесь будет страница фотографий пользователя";
     return renderUserPageComponent({
       appEl,
     });
